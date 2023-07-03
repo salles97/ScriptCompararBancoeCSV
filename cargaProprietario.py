@@ -1,25 +1,9 @@
-import chardet
-import csv
+from detectEncoding import detect_encoding
 import pandas as pd
 from psycopg2 import sql
-import psycopg2
-from config import db_config
 
 
-def detect_encoding(file_path):
-    with open(file_path, 'rb') as f:
-        result = chardet.detect(f.read())
-    return result['encoding']
-
-
-def connectDB():
-    # Estabelece a conexão com o banco de dados
-    conexao_banco = psycopg2.connect(
-        host=db_config["host"],
-        database=db_config["database"],
-        user=db_config["user"],
-        password=db_config["password"]
-    )
+def carga_proprietario(conexao_banco):
 
     # Obtém um cursor para executar comandos SQL
     cur = conexao_banco.cursor()
@@ -49,7 +33,3 @@ def connectDB():
     # Fecha a conexão com o banco de dados
     cur.close()
     conexao_banco.commit()
-    conexao_banco.close()
-
-
-connectDB()

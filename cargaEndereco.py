@@ -1,25 +1,10 @@
-import chardet
-import csv
+from detectEncoding import detect_encoding
 import pandas as pd
 from psycopg2 import sql
-import psycopg2
-from config import db_config
 
 
-def detect_encoding(file_path):
-    with open(file_path, 'rb') as f:
-        result = chardet.detect(f.read())
-    return result['encoding']
-
-
-def connectDB():
+def carga_endereco(conexao_banco):
     # Estabelece a conexão com o banco de dados
-    conexao_banco = psycopg2.connect(
-        host=db_config["host"],
-        database=db_config["database"],
-        user=db_config["user"],
-        password=db_config["password"]
-    )
 
     # Obtém um cursor para executar comandos SQL
     cur = conexao_banco.cursor()
@@ -38,11 +23,12 @@ def connectDB():
 
         # Consulta para encontrar o id do logradouro
         cur.execute(
-            "SELECT id_log FROM dado_antigo.logradouros WHERE nome_log = %s", (row['logradouro'],))
+            "SELECT id_log FROM dado_antigo.logradouro WHERE nome = %s", (row['logradouro'],))
         logradouro_id = cur.fetchone()
         if logradouro_id is None:
+            print(logradouro_id)
             print('Logradouro não encontrado: ' + row['logradouro'])
-            continue
+
         else:
             logradouro_id = logradouro_id[0]
 
@@ -76,7 +62,3 @@ def connectDB():
 
     conexao_banco.commit()
     cur.close()
-    conexao_banco.close()
-
-
-connectDB()
