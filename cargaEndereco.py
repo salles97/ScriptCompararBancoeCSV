@@ -45,6 +45,12 @@ def carga_endereco(conexao_banco):
         if pd.isna(loteamento):
             loteamento = ''
 
+        numero = row.get('numero')
+        if pd.isna(numero):
+            numero = ''
+        else:
+            numero = numero.split('.')[0]
+
         insert = sql.SQL("""
         INSERT INTO dado_antigo.endereco (id, logradouro, logradouro_id, numero, bairro, complemento, apartamento, loteamento, bairro_id) 
         SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s
@@ -54,7 +60,7 @@ def carga_endereco(conexao_banco):
             WHERE id = %s
         ) returning id
     """)
-        cur.execute(insert, (row['id'], row['logradouro'], logradouro_id, row['numero'], row['bairro'],
+        cur.execute(insert, (row['id'], row['logradouro'], logradouro_id, numero, row['bairro'],
                              complemento, row['apartamento'],  loteamento, row['bairro_id'], row['id']))
         novoId = cur.fetchone()
         if novoId is not None:
