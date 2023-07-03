@@ -1,29 +1,11 @@
 import chardet
-import csv
 import pandas as pd
 from psycopg2 import sql
-import psycopg2
-from config import db_config
+from detectEncoding import detect_encoding
 
 
-def detect_encoding(file_path):
-    with open(file_path, 'rb') as f:
-        result = chardet.detect(f.read())
-    return result['encoding']
-
-
-def connectDB():
-    # Estabelece a conexão com o banco de dados
-    conexao_banco = psycopg2.connect(
-        host=db_config["host"],
-        database=db_config["database"],
-        user=db_config["user"],
-        password=db_config["password"]
-    )
-
-    # Obtém um cursor para executar comandos SQL
+def carga_bairro(conexao_banco):
     cur = conexao_banco.cursor()
-
     # Lê o arquivo CSV em um DataFrame
     caminho_csv = '''D:/UNIFEI Aulas/0001 estagio/Projeto Itanhandu/Banco de dados/ScriptCompararBancoeCSV/carga_novas/bairro.csv'''
     encoding = detect_encoding(caminho_csv)
@@ -49,7 +31,3 @@ def connectDB():
 
     conexao_banco.commit()
     cur.close()
-    conexao_banco.close()
-
-
-connectDB()
