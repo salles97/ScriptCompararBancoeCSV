@@ -45,7 +45,7 @@ def connectDB():
         ids_banco)].drop_duplicates(subset=['Imovel'])
 
     # Salva a diferença em um novo arquivo CSV
-    caminho_novo_csv = './imoveis_Itanhandu_faltantes.csv'
+    caminho_novo_csv = './imoveis_Itanhandu_faltantes2.csv'
     df_diferenca.to_csv(caminho_novo_csv, index=False, sep=';')
 
     # Fecha a conexão com o banco de dados
